@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="README.md">English</a> | <a href="README_zh.md">中文</a>
+</p>
+
 # seedance-director
 
 你的 AI 视频导演 — 从创意想法到专业分镜和即梦提示词，一步到位。

@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="README.md">English</a> | <a href="README_zh.md">中文</a>
+</p>
+
 # seedance-director
 
 Your AI Director for Seedance 2.0 — From creative ideas to professional storyboards and production-ready prompts.
