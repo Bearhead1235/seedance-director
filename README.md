@@ -6,7 +6,7 @@
 
 > Struggling with Seedance prompts? Let your AI director handle it.
 
-Describe your idea. seedance-director takes it from **concept → storyboard → Seedance prompt → platform instructions** — so you can skip the guesswork.
+Describe your idea. seedance-director walks you through story structure, storyboarding, prompt generation, and platform instructions.
 
 ## Without It vs With It
 
@@ -24,13 +24,13 @@ You do:  Figure out story structure             Answer a few quick choices
 Time:         30-60 min                              3 min
 ```
 
-## Three Core Strengths
+## What It Does
 
-**Thinks like a director** — Doesn't just spit out prompts. First structures your story (three-act, hook-twist, contrast...), then breaks it into a professional shot list. Film methodology + AI video, combined.
+**Helps you think through the story first** — You say an idea, the director helps you pick a narrative structure (three-act, hook-twist, contrast...), breaks it into a shot-by-shot storyboard, then converts each shot into a prompt. The workflow borrows from traditional filmmaking pre-production.
 
-**Short clips and long videos** — Up to 15s in one shot. Over 15s? Auto-splits into segments with anchor frames between them for visual continuity. Supports 60s+.
+**Handles 15s clips and 60s projects** — Short videos generate in one go. Anything over 15s gets auto-split into segments with anchor frames between them so the visuals stay continuous.
 
-**Prompt to platform, end-to-end** — Not just prompts. Tells you exactly what to click, what to upload, and what parameters to set on the Seedance platform. Beginners welcome.
+**Prompts come with platform instructions** — Each prompt includes step-by-step guidance for the Seedance platform: what to upload, what parameters to set, how to chain segments together.
 
 ## Quick Start
 
@@ -38,7 +38,7 @@ Time:         30-60 min                              3 min
 claude skill add --url https://github.com/crowscc/seedance-director
 ```
 
-Then just describe your video idea. Activates automatically when you mention "Seedance", "video", "storyboard", or "prompt".
+Then describe your video idea. Activates when you mention "Seedance", "video", "storyboard", or "prompt".
 
 ## See It in Action
 
@@ -86,11 +86,11 @@ Director:
 | Story Completion | AI fills in transitions |
 | Video Extension | Continue an existing video |
 | Voice & Audio | Dialogue, voice cloning, SFX |
-| One-Take | Chain images into seamless long take |
+| One-Take | Chain images into a seamless long take |
 | Video Editing | Swap characters, change plot |
 | Music Sync | Visuals follow the beat |
 
-## Long Videos? Auto-segmented
+## Long Videos Get Auto-segmented
 
 | Duration | What happens |
 |----------|-------------|
@@ -100,14 +100,14 @@ Director:
 | 46-60s | 4 segments |
 | 60s+ | Split by scene, assemble in editor |
 
-Each segment boundary has an **anchor frame** — the ending of one matches the opening of the next.
+Each segment boundary has an anchor frame — the ending of one matches the opening of the next.
 
-## 5 Built-in Scene Templates
+## 5 Scene Templates
 
-Ready to use, no starting from scratch:
+Pre-built storyboard templates for common video types:
 
 - **E-commerce** — 360 rotation, macro detail, 3D render
-- **Xianxia/Anime** — Magic effects, transformation, energy waves
+- **Xianxia/Anime** — Magic circles, transformation, energy waves
 - **Short Drama** — Multi-character dialogue, emotion tags, SFX
 - **Educational** — Visualization, narration, explainer style
 - **Music Video** — 2.35:1 widescreen, beat sync, fast cuts
