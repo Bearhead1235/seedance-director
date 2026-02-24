@@ -4,142 +4,115 @@
 
 # seedance-director
 
-> Struggling with Seedance prompts? Let your AI director handle it.
+> AI video director for the Seedance (即梦) platform. Idea in, production-ready prompts out.
 
-Describe your idea. seedance-director walks you through story structure, storyboarding, prompt generation, and platform instructions.
+An [Agent Skill](https://agentskills.io) that guides you from a rough idea through asset preparation, storyboarding, and prompt generation — all inside Claude Code.
 
-## Without It vs With It
-
-```
-         Without seedance-director             With seedance-director
-         ─────────────────────────             ──────────────────────
-
-Input:   "Make me a coffee ad"                 "Make me a coffee ad"
-                  │                                     │
-You do:  Figure out story structure             Answer a few quick choices
-         Look up camera terminology             Get a pro storyboard auto-generated
-         Cobble together a prompt               Get a ready-to-paste prompt
-         Trial-and-error on the platform        Get step-by-step instructions
-                  │                                     │
-Time:         30-60 min                              3 min
-```
-
-## What It Does
-
-**Helps you think through the story first** — You say an idea, the director helps you pick a narrative structure (three-act, hook-twist, contrast...), breaks it into a shot-by-shot storyboard, then converts each shot into a prompt. The workflow borrows from traditional filmmaking pre-production.
-
-**Handles 15s clips and 60s projects** — Short videos generate in one go. Anything over 15s gets auto-split into segments with anchor frames between them so the visuals stay continuous.
-
-**Prompts come with platform instructions** — Each prompt includes step-by-step guidance for the Seedance platform: what to upload, what parameters to set, how to chain segments together.
-
-## Quick Start
+## Install
 
 ```bash
-claude skill add --url https://github.com/crowscc/seedance-director
+npx skills add https://github.com/crowscc/seedance-director
 ```
 
-Then describe your video idea. Activates when you mention "Seedance", "video", "storyboard", or "prompt".
+Then describe your video idea. Activates on keywords like "Seedance", "即梦", "storyboard", "分镜", "运镜", etc.
 
-## See It in Action
+## What's Different About v2
+
+| | v1 | v2 |
+|---|---|---|
+| Assets | You bring your own | Generates character turnaround sheets, scene concepts, key frames |
+| Consistency | One reference image, hope for the best | Turnaround sheets + scene anchors across every segment |
+| Long videos | Chain via video extension (quality degrades) | Independent generation + first-frame stitching for 3+ segments |
+| Interaction | Text-based Q&A | Structured choices via `AskUserQuestion` with dynamic options |
+| Architecture | 635-line monolith | 262-line core + progressive-disclosure references |
+
+## How It Works
 
 ```
-You:      I want a 30-second coffee brand ad. Cinematic, warm tones.
-          I have 3 product photos.
+You: I want a 30-second coffee brand ad. Cinematic, warm tones. I have 3 product photos.
 
-Director: Got it. Which narrative structure?
-          A. Hook → Reveal (steam close-up opener)
-          B. Process (bean to cup journey)
-          C. Lifestyle (cozy scene, enjoying coffee)
+Director: [AskUserQuestion]
+          Which narrative structure fits best?
+          > Process Journey — bean to cup, matches your product story ✓
+          > Contrast — before/after, good for taste reveal
+          > Custom — describe your own
 
-You:      B
+You: Process Journey
+
+Director: [AskUserQuestion]
+          You're missing character/scene references.
+          > Generate scene concept art for me
+          > I'll provide my own
+          > Skip — text-only generation
+
+You: Generate scene concept art
 
 Director:
-  ┌──────────────────────────────────────────────────┐
-  │  Storyboard: Coffee Origins                       │
-  │  30s (2 segments) | 16:9 | Cinematic warm         │
-  │                                                    │
-  │  001 | 0-4s  | Macro     | Push In  | Bean texture │
-  │  002 | 4-8s  | Close-Up  | Tilt     | Into grinder │
-  │  003 | 8-12s | Medium    | Static   | Pour-over    │
-  │  004 | 12-15s| Close-Up  | Push In  | Coffee drip  │
-  │  ...                                               │
-  ├──────────────────────────────────────────────────┤
-  │  Segment 1 Prompt (paste into Seedance)            │
-  │  @Photo1 中的咖啡豆在晨光中缓缓滚动，微距镜头...   │
-  ├──────────────────────────────────────────────────┤
-  │  Operation Guide                                   │
-  │  1. Open Seedance → Image-to-Video                 │
-  │  2. Upload photo, paste prompt                     │
-  │  3. Duration 15s, ratio 16:9                       │
-  │  4. Then → Video Extension → paste segment 2       │
-  └──────────────────────────────────────────────────┘
+  1. Scene concept prompt (paste into image generator):
+     "Coffee plantation at sunrise, golden hour, mist rising..."
+
+  2. Storyboard (2 segments, 16:9, cinematic warm):
+     001 | 0-4s  | Macro CU    | Dolly In | Bean texture, golden backlight
+     002 | 4-8s  | Close-Up    | Tilt Down| Beans into grinder
+     003 | 8-12s | Medium Shot | Static   | Pour-over, steam rising
+     ...
+
+  3. Segment 1 prompt (paste into Seedance):
+     宽高比16:9，时长15秒，电影质感...
+     @图片1 中的咖啡豆在晨光中缓缓滚动...
+
+  4. Operation guide:
+     Upload product photo → Set 15s, 16:9 → Generate
+     → Screenshot last frame → Use as first-frame ref for segment 2
 ```
 
-## All 10 Seedance Capabilities
+## Multi-Segment Strategy
 
-| Capability | What it does |
-|-----------|-------------|
-| Text-to-Video | No assets needed, just describe |
-| Consistency Control | Lock character/scene across shots |
-| Motion Reference | Copy camera moves from a reference |
-| Effect Reference | Copy visual effects from a reference |
-| Story Completion | AI fills in transitions |
-| Video Extension | Continue an existing video |
-| Voice & Audio | Dialogue, voice cloning, SFX |
-| One-Take | Chain images into a seamless long take |
-| Video Editing | Swap characters, change plot |
-| Music Sync | Visuals follow the beat |
+| Duration | Strategy | Why |
+|----------|----------|-----|
+| Up to 15s | Single generation | Within platform limit |
+| 16-30s | Segment 1 + video extension | Extension's sweet spot, natural continuity |
+| 31s+ | Independent generation per segment | Each segment uses turnaround sheets + scene art + previous segment's last frame as references. Avoids error propagation and style drift. Assemble in CapCut/editor. |
 
-## Long Videos Get Auto-segmented
+## Asset Preparation (Phase 0)
 
-| Duration | What happens |
-|----------|-------------|
-| Up to 15s | Single generation |
-| 16-30s | 2 segments, linked by video extension |
-| 31-45s | 3 segments |
-| 46-60s | 4 segments |
-| 60s+ | Split by scene, assemble in editor |
+Before generating any video, the director checks what you have and offers to fill gaps:
 
-Each segment boundary has an anchor frame — the ending of one matches the opening of the next.
+| Asset | Purpose | How |
+|-------|---------|-----|
+| Character turnaround sheet | Consistent character across all shots | Image model: front + side + back views |
+| Scene concept art | Lock environment style, lighting, color | Image model: environment reference |
+| Key frames | Ensure segment-to-segment continuity | Image model or screenshot from previous segment |
 
-## 5 Scene Templates
+If you already have reference images, Phase 0 is skipped entirely.
 
-Pre-built storyboard templates for common video types:
-
-- **E-commerce** — 360 rotation, macro detail, 3D render
-- **Xianxia/Anime** — Magic circles, transformation, energy waves
-- **Short Drama** — Multi-character dialogue, emotion tags, SFX
-- **Educational** — Visualization, narration, explainer style
-- **Music Video** — 2.35:1 widescreen, beat sync, fast cuts
-
-<details>
-<summary>Project Structure</summary>
+## Project Structure
 
 ```
-seedance-director/
-├── .claude/skills/seedance-director/
-│   └── SKILL.md                 # Core: interaction logic + capability templates
-├── templates/
-│   ├── single-video.md          # Single-segment templates (5 types)
-│   ├── multi-segment.md         # Multi-segment templates
-│   └── scene-templates.md       # Scene templates (5 genres)
-├── examples/
-│   ├── single-examples.md       # Single-segment examples (6)
-│   └── multi-examples.md        # Multi-segment examples (4)
+skills/seedance-director/
+├── SKILL.md                          # Core workflow (262 lines)
 ├── references/
-│   └── vocabulary.md            # Camera & visual style bilingual vocabulary
-├── README.md / README_zh.md
-└── LICENSE (MIT)
+│   ├── platform-capabilities.md      # 10 Seedance modes + tech specs + @reference rules
+│   ├── narrative-structures.md       # 5 narrative structures with timing
+│   ├── scene-strategies.md           # 5 scene-type strategies with full prompt examples
+│   └── vocabulary.md                 # Camera + visual style bilingual vocabulary
+├── templates/
+│   ├── single-video.md               # 5 storyboard templates (A-E)
+│   ├── multi-segment.md              # Multi-segment templates for 30s/45s/60s+
+│   └── scene-templates.md            # E-commerce / Xianxia / Drama / Education / MV
+└── examples/
+    ├── single-examples.md            # 6 complete single-segment examples
+    └── multi-examples.md             # 4 complete multi-segment examples
 ```
 
-</details>
+References are loaded on demand — the core SKILL.md stays lean.
 
 ## Acknowledgments
 
 Inspired by:
 
-- [songguoxs/seedance-prompt-skill](https://github.com/songguoxs/seedance-prompt-skill) — Capability templates and multi-segment strategy
-- [elementsix/elementsix-skills](https://github.com/elementsix/elementsix-skills) — Interactive guidance and modular architecture
+- [songguoxs/seedance-prompt-skill](https://github.com/songguoxs/seedance-prompt-skill)
+- [elementsix/elementsix-skills](https://github.com/elementsix/elementsix-skills)
 
 ## License
 
