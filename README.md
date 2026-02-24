@@ -16,75 +16,92 @@ npx skills add https://github.com/crowscc/seedance-director
 
 Then describe your video idea. Activates on keywords like "Seedance", "即梦", "storyboard", "分镜", "运镜", etc.
 
-## What's Different About v2
+## Workflow
 
-| | v1 | v2 |
-|---|---|---|
-| Assets | You bring your own | Generates character turnaround sheets, scene concepts, key frames |
-| Consistency | One reference image, hope for the best | Turnaround sheets + scene anchors across every segment |
-| Long videos | Chain via video extension (quality degrades) | Independent generation + first-frame stitching for 3+ segments |
-| Interaction | Text-based Q&A | Structured choices via `AskUserQuestion` with dynamic options |
-| Architecture | 635-line monolith | 262-line core + progressive-disclosure references |
+<p align="center">
+  <img src="assets/workflow.svg" alt="seedance-director workflow" width="700">
+</p>
 
-## How It Works
+### Phase 1-2: Understand & Dig
+
+Scans your input for 5 dimensions: **topic**, **duration**, **style**, **assets**, **audio**.
+
+Missing info gets filled via `AskUserQuestion` — options are **dynamically ranked** by relevance to your idea. Say "coffee ad" and narrative structures like "Contrast" and "Process Journey" get prioritized over "Suspense." Up to 3 rounds, then moves on.
+
+### Phase 0: Asset Preparation
+
+Before any storyboard gets generated, checks what visual references you have. **Have them? Skip. Don't? Generate:**
+
+- **Character turnaround sheet** — front + side + back views, locks character appearance across all shots
+- **Scene concept art** — locks environment style, lighting, color palette to prevent drift across segments
+- **Key frames** — first frame for each segment, ensures seamless segment-to-segment continuity
+
+The director asks via `AskUserQuestion` which assets to generate. You can always provide your own instead.
+
+### Phase 3: Storyboard
+
+Generates a professional shot-by-shot storyboard (shot sizes and camera moves labeled in both Chinese and English). Duration determines the generation strategy:
+
+| Duration | Strategy |
+|----------|----------|
+| **≤ 15s** | Single generation |
+| **16-30s** | 2 segments — segment 2 uses **video extension** (extension's sweet spot) |
+| **31s+** | Each segment generated **independently** — uses turnaround sheets + scene art + previous segment's last frame as references. Avoids error propagation and style drift. Assemble in CapCut/editor. |
+
+Storyboard is confirmed via `AskUserQuestion` before moving on.
+
+### Phase 4: Seedance Prompts
+
+Converts confirmed storyboard into **copy-paste-ready prompts** for the Seedance platform:
+
+```
+[Tech params]  Aspect ratio, duration, style, fps
+[Timestamped shots]  Per-second scene, camera move, lighting description
+[@References]  Each asset labeled with its role
+[Negatives]  No text, watermarks, logos
+```
+
+Single-segment gets 2-3 prompt variants. Multi-segment outputs one prompt per segment.
+
+### Phase 5: Operation Guide
+
+Step-by-step Seedance platform instructions: upload order, parameter settings, segment stitching workflow, post-generation checklist. For 3+ segments, includes CapCut assembly guide.
+
+## See It in Action
 
 ```
 You: I want a 30-second coffee brand ad. Cinematic, warm tones. I have 3 product photos.
 
-Director: [AskUserQuestion]
-          Which narrative structure fits best?
+Director: [AskUserQuestion] Which narrative structure fits best?
           > Process Journey — bean to cup, matches your product story ✓
           > Contrast — before/after, good for taste reveal
           > Custom — describe your own
 
 You: Process Journey
 
-Director: [AskUserQuestion]
-          You're missing character/scene references.
-          > Generate scene concept art for me
+Director: [AskUserQuestion] You're missing scene references. Generate them?
+          > Generate scene concept art
           > I'll provide my own
-          > Skip — text-only generation
 
 You: Generate scene concept art
 
 Director:
-  1. Scene concept prompt (paste into image generator):
-     "Coffee plantation at sunrise, golden hour, mist rising..."
+  Scene concept prompt → "Coffee plantation at sunrise, golden hour..."
 
-  2. Storyboard (2 segments, 16:9, cinematic warm):
-     001 | 0-4s  | Macro CU    | Dolly In | Bean texture, golden backlight
-     002 | 4-8s  | Close-Up    | Tilt Down| Beans into grinder
-     003 | 8-12s | Medium Shot | Static   | Pour-over, steam rising
-     ...
+  Storyboard (2 segments, 16:9, cinematic warm):
+    001 | 0-4s  | Macro CU    | Dolly In | Bean texture, golden backlight
+    002 | 4-8s  | Close-Up    | Tilt Down| Beans into grinder
+    003 | 8-12s | Medium Shot | Static   | Pour-over, steam rising
+    ...
 
-  3. Segment 1 prompt (paste into Seedance):
-     宽高比16:9，时长15秒，电影质感...
-     @图片1 中的咖啡豆在晨光中缓缓滚动...
+  Segment 1 prompt (paste into Seedance):
+    宽高比16:9，时长15秒，电影质感...
+    @图片1 中的咖啡豆在晨光中缓缓滚动...
 
-  4. Operation guide:
-     Upload product photo → Set 15s, 16:9 → Generate
-     → Screenshot last frame → Use as first-frame ref for segment 2
+  Operation guide:
+    Upload photo → 15s, 16:9 → Generate
+    → Screenshot last frame → First-frame ref for segment 2
 ```
-
-## Multi-Segment Strategy
-
-| Duration | Strategy | Why |
-|----------|----------|-----|
-| Up to 15s | Single generation | Within platform limit |
-| 16-30s | Segment 1 + video extension | Extension's sweet spot, natural continuity |
-| 31s+ | Independent generation per segment | Each segment uses turnaround sheets + scene art + previous segment's last frame as references. Avoids error propagation and style drift. Assemble in CapCut/editor. |
-
-## Asset Preparation (Phase 0)
-
-Before generating any video, the director checks what you have and offers to fill gaps:
-
-| Asset | Purpose | How |
-|-------|---------|-----|
-| Character turnaround sheet | Consistent character across all shots | Image model: front + side + back views |
-| Scene concept art | Lock environment style, lighting, color | Image model: environment reference |
-| Key frames | Ensure segment-to-segment continuity | Image model or screenshot from previous segment |
-
-If you already have reference images, Phase 0 is skipped entirely.
 
 ## Project Structure
 
