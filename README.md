@@ -52,7 +52,7 @@ Storyboard is confirmed via `AskUserQuestion` before moving on.
 
 ### Phase 4: Seedance Prompts
 
-Converts confirmed storyboard into **copy-paste-ready prompts** for the Seedance platform. Every prompt follows a fixed **five-section structure**:
+Converts confirmed storyboard into **copy-paste-ready prompts** for the Seedance platform. Every prompt follows a fixed **six-section structure**:
 
 ```
 ## Characters + References
@@ -120,6 +120,10 @@ Director:
     镜头1（0-4s）：Macro CU, bean texture, Dolly In
     镜头2（4-8s）：CU, beans into grinder, Tilt Down
     ...
+
+    ## Sound Design
+    BGM: Gentle piano → guitar joins → warm cello peak
+    Ambient: 0-9s keyboard clicks, AC hum; 9-15s birdsong, engine start
 
     ## Style Directives
     Cinematic, warm tones, 16:9, 24fps
