@@ -143,7 +143,7 @@ skills/seedance-director/
 ├── SKILL.md                          # Core workflow (273 lines)
 ├── references/
 │   ├── platform-capabilities.md      # 10 Seedance modes + tech specs + @reference rules
-│   ├── narrative-structures.md       # 5 narrative structures with timing
+│   ├── narrative-structures.md       # 16 narrative structures with timing & selection guide
 │   ├── scene-strategies.md           # 5 scene-type strategies with full prompt examples
 │   └── vocabulary.md                 # Camera + visual style bilingual vocabulary
 ├── templates/
