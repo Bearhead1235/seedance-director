@@ -142,14 +142,14 @@ Director:
 skills/seedance-director/
 ├── SKILL.md                          # Core workflow (273 lines)
 ├── references/
-│   ├── platform-capabilities.md      # 10 Seedance modes + tech specs + @reference rules
+│   ├── platform-capabilities.md      # 10 AI Animated modes + tech specs + @reference rules
 │   ├── narrative-structures.md       # 16 narrative structures with timing & selection guide
 │   ├── scene-strategies.md           # 5 scene-type strategies with full prompt examples
 │   └── vocabulary.md                 # Camera + visual style bilingual vocabulary
 ├── templates/
 │   ├── single-video.md               # 5 storyboard templates (A-E)
 │   ├── multi-segment.md              # Multi-segment templates for 30s/45s/60s+
-│   └── scene-templates.md            # E-commerce / Xianxia / Drama / Education / MV
+│   └── scene-templates.md            # E-commerce / Cinematic / Drama / ShortClip / MV
 └── examples/
     ├── single-examples.md            # 6 complete single-segment examples
     └── multi-examples.md             # 4 complete multi-segment examples
